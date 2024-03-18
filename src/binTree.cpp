@@ -5,8 +5,8 @@
 #include <random>
 #include <unordered_set>
 
-#include "AVLTree.hpp"
-#include "RedBlackTree.hpp"
+#include "Tree/AVLTree.hpp"
+#include "Tree/RedBlackTree.hpp"
 
 /* #define CHAVES 1000000 */
 #define CHAVES 20
