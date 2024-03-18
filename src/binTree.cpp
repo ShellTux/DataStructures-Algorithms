@@ -23,8 +23,10 @@
 #define FLAGS                                                             \
     WRAPPER(HELP, 0, "-h", "--help", "Display this help message")         \
     WRAPPER(VERSION, 1, "-v", "--version", "Display version information") \
-    WRAPPER(VISUALIZE, 2, "-V", "--visualize", "Visualize Binary Trees")  \
-    WRAPPER(BENCHMARK, 3, "-B", "--benchmark", "Benchmark Binary Trees")
+    WRAPPER(QUIET, 2, "-q", "--quiet", "Show less output")                \
+    WRAPPER(VISUALIZE, 3, "-V", "--visualize", "Visualize Binary Trees")  \
+    WRAPPER(BENCHMARK, 4, "-B", "--benchmark", "Benchmark Binary Trees")  \
+    WRAPPER(CSV_FORMAT, 5, "-c", "--csv-format", "Output style in csv format")
 
 typedef enum {
 #define WRAPPER(enum, bit_shift, short, long, description) \
@@ -150,7 +152,9 @@ int main(int argc, char** argv) {
         RedBlackTree<int> redBlackTree{};
 
         const auto keys = Generate::Keys<int, BENCHMARK_KEYS>(0);
-        Array::print(keys);
+        if (!(enabled_flags & QUIET)) {
+            Array::print(keys);
+        }
 
         std::chrono::duration<double> duration;
 
@@ -158,33 +162,49 @@ int main(int argc, char** argv) {
                           : keys) { binSearchTree.insert(key); }
 
         );
-        std::cout << "Binary Search Tree Insertion of " << BENCHMARK_KEYS
-                  << " keys took: " << duration.count() << " seconds"
-                  << std::endl;
+        std::chrono::duration<double> binSearchTreeDuration = duration;
 
         MEASURE_TIME(for (const auto& key
                           : keys) { avlTree.insert(key); }
 
         );
-        std::cout << "AVL Tree Insertion of " << BENCHMARK_KEYS
-                  << " keys took: " << duration.count() << " seconds"
-                  << std::endl;
+        std::chrono::duration<double> avlTreeDuration = duration;
 
         MEASURE_TIME(for (const auto& key
                           : keys) { redBlackTree.insert(key); }
 
         );
-        std::cout << "Red-Black Tree Insertion of " << BENCHMARK_KEYS
-                  << " keys took: " << duration.count() << " seconds"
-                  << std::endl;
+        std::chrono::duration<double> redBlackTreeDuration = duration;
 
-        std::cout << std::endl;
-        std::cout << "Binary Search Tree Rotations: "
-                  << binSearchTree.rotation_count << std::endl;
-        std::cout << "AVL Tree Rotations:           " << avlTree.rotation_count
-                  << std::endl;
-        std::cout << "Red Black Tree Rotations:     "
-                  << redBlackTree.rotation_count << std::endl;
+        if (enabled_flags & CSV_FORMAT) {
+            std::cout << "Structure;Insertion Time of " << BENCHMARK_KEYS
+                      << " keys (seconds);Rotations" << std::endl;
+            std::cout << "BinarySearchTree;" << binSearchTreeDuration.count()
+                      << ";" << binSearchTree.rotation_count << std::endl;
+            std::cout << "AVLTree;" << avlTreeDuration.count() << ";"
+                      << avlTree.rotation_count << std::endl;
+            std::cout << "RedBlackTree;" << redBlackTreeDuration.count() << ";"
+                      << redBlackTree.rotation_count << std::endl;
+        } else {
+            std::cout << "Binary Search Tree Insertion of " << BENCHMARK_KEYS
+                      << " keys took: " << binSearchTreeDuration.count()
+                      << " seconds" << std::endl;
+
+            std::cout << "AVL Tree Insertion of " << BENCHMARK_KEYS
+                      << " keys took: " << avlTreeDuration.count() << " seconds"
+                      << std::endl;
+            std::cout << "Red-Black Tree Insertion of " << BENCHMARK_KEYS
+                      << " keys took: " << redBlackTreeDuration.count()
+                      << " seconds" << std::endl;
+
+            std::cout << std::endl;
+            std::cout << "Binary Search Tree Rotations: "
+                      << binSearchTree.rotation_count << std::endl;
+            std::cout << "AVL Tree Rotations:           "
+                      << avlTree.rotation_count << std::endl;
+            std::cout << "Red Black Tree Rotations:     "
+                      << redBlackTree.rotation_count << std::endl;
+        }
     }
 
     return 0;
