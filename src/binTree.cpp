@@ -1,67 +1,47 @@
 #include <array>
 #include <cstddef>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
-#include <limits>
 #include <memory>
 #include <ostream>
-#include <random>
-#include <unordered_set>
+#include <string>
 
 #include "Tree/AVLTree.hpp"
 #include "Tree/BinaryNode.hpp"
 #include "Tree/BinarySearchTree.hpp"
 #include "Tree/RedBlackTree.hpp"
+#include "Tree/print.hpp"
+#include "generator.hpp"
 
-/* #define CHAVES 1000000 */
-#define CHAVES 20
+#define BENCHMARK_KEYS 1000000
+#define VISUALIZE_KEYS 10
 
-template <typename T, size_t size>
-std::array<T, size> generate_keys(const double& repeated_percentage) {
-    std::unordered_set<T> included{};
-    std::array<T, size> array{};
-    size_t repeatedCount = size * repeated_percentage;
+#define FLAGS                                                             \
+    WRAPPER(HELP, 0, "-h", "--help", "Display this help message")         \
+    WRAPPER(VERSION, 1, "-v", "--version", "Display version information") \
+    WRAPPER(VISUALIZE, 2, "-V", "--visualize", "Visualize Binary Trees") \
+    WRAPPER(BENCHMARK, 3, "-B", "--benchmark", "Benchmark Binary Trees")
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<T> distrib(0, std::numeric_limits<T>::max());
+typedef enum {
+#define WRAPPER(enum, bit_shift, short, long, description) \
+    enum = 1 << bit_shift,
+    FLAGS
+#undef WRAPPER
+} Flag;
 
-    for (size_t i = 0; i < size - repeatedCount; i++) {
-        T num;
-        do {
-            num = distrib(gen);
-        } while (included.count(num) > 0);
+void usage(const std::string& program_name) {
+    using std::cout;
+    using std::endl;
 
-        array[i] = num;
-        included.insert(num);
-    }
+    cout << "Usage: " << program_name << " [options]" << endl;
+    cout << "Options:" << endl;
+#define WRAPPER(enum, bit_shift, short, long, description) \
+    cout << "  " short ", " long "\t\t" description << endl;
+    FLAGS
+#undef WRAPPER
 
-    for (size_t i = size - repeatedCount; i < size; i++) {
-        T num    = array[std::rand() % (size - repeatedCount)];
-        array[i] = num;
-    }
-
-    return array;
-}
-
-template <typename T, size_t N>
-void print_repeated(const std::array<T, N>& array) {
-    size_t repeatedCount = 0;
-    std::unordered_set<T> included{};
-
-    for (const auto& element : array) {
-        if (included.count(element) == 0) {
-            included.insert(element);
-            continue;
-        }
-
-        ++repeatedCount;
-    }
-
-    std::cout << "Array size: " << array.size() << std::endl;
-    std::cout << "Array Repeated: " << repeatedCount << std::endl;
-    std::cout << "Array Repeated (%): " << (double)repeatedCount / array.size()
-              << std::endl;
+    exit(EXIT_FAILURE);
 }
 
 template <typename T, size_t N>
@@ -83,11 +63,27 @@ std::ostream& operator<<(std::ostream& os, const std::array<T, N>& arr) {
     WRAPPER(C, 0.1) \
     WRAPPER(D, 0.9)
 
-int main() {
+int main(int argc, char** argv) {
+    size_t enabled_flags = 0;
+    for (int i = 0; i < argc; ++i) {
+        const char* const argument = argv[i];
+#define WRAPPER(enum, bit_shift, short, long, description) \
+    if (strncmp(argument, short, sizeof(short)) == 0 ||    \
+        strncmp(argument, long, sizeof(long)) == 0) {      \
+        enabled_flags |= enum;                             \
+    }
+        FLAGS
+#undef WRAPPER
+    }
+
+    if (enabled_flags & HELP) {
+        usage(argv[0]);
+    }
+
 #define WRAPPER(letter, repeated_percentage)                       \
     {                                                              \
-        std::array<int, CHAVES> group##letter =                    \
-            generate_keys<int, CHAVES>(repeated_percentage);       \
+        std::array<int, VISUALIZE_KEYS> group##letter =                    \
+            generate_keys<int, VISUALIZE_KEYS>(repeated_percentage);       \
                                                                    \
         if (std::string(#letter) == "A") {                         \
             std::sort(group##letter.begin(), group##letter.end()); \
@@ -97,7 +93,7 @@ int main() {
         }                                                          \
                                                                    \
         std::cout << "Group " #letter << std::endl;                \
-        if (CHAVES < 100) {                                        \
+        if (VISUALIZE_KEYS < 100) {                                        \
             std::cout << group##letter << std::endl;               \
         }                                                          \
         print_repeated(group##letter);                             \
@@ -108,46 +104,42 @@ int main() {
 #endif
 #undef WRAPPER
 
-    srand(10);
-    BinarySearchTree<int> binSearchTree{};
-    AVLTree<int> avlTree{};
-    RedBlackTree<int> redBlackTree{};
+    if (enabled_flags & VISUALIZE) {
+        BinarySearchTree<int> binSearchTree{};
+        AVLTree<int> avlTree{};
+        RedBlackTree<int> redBlackTree{};
 
-    constexpr const int AMOUNT  = 10;
-    constexpr const int MAXIMUM = 30;
-    for (int i = 0; i < AMOUNT; i++) {
-        const int value = rand() % MAXIMUM;
-        std::cout << value;
-        if (i < AMOUNT - 1) {
-            std::cout << ", ";
+        const auto keys = Generate::Keys<int, VISUALIZE_KEYS>(0);
+        Array::print(keys);
+
+        for (const auto& key : keys) {
+            binSearchTree.insert(key);
+            avlTree.insert(key);
+            redBlackTree.insert(key);
         }
-        binSearchTree.insert(value);
-        avlTree.insert(value);
-        redBlackTree.insert(value);
+
+        const auto printNodeInfo =
+            [](const std::shared_ptr<BinaryNode<int>> element) {
+                std::cout << "Element " << element->data
+                          << ", Height: " << element->height()
+                          << ", Size: " << element->size() << std::endl;
+            };
+
+        std::cout << "Binary Search Tree:" << std::endl;
+        binSearchTree.Dump();
+        binSearchTree.for_each(printNodeInfo);
+        std::cout << std::endl;
+
+        std::cout << "AVL Tree:" << std::endl;
+        avlTree.Dump();
+        avlTree.for_each(printNodeInfo);
+        std::cout << std::endl;
+
+        std::cout << "Red-Black Tree:" << std::endl;
+        redBlackTree.Dump();
+        redBlackTree.for_each(printNodeInfo);
+        std::cout << std::endl;
     }
-    std::cout << std::endl;
-
-    const auto printNodeInfo =
-        [](const std::shared_ptr<BinaryNode<int>> element) {
-            std::cout << "Element " << element->data
-                      << ", Height: " << element->height()
-                      << ", Size: " << element->size() << std::endl;
-        };
-
-    std::cout << "Binary Search Tree:" << std::endl;
-    binSearchTree.Dump();
-    binSearchTree.for_each(printNodeInfo);
-    std::cout << std::endl;
-
-    std::cout << "AVL Tree:" << std::endl;
-    avlTree.Dump();
-    avlTree.for_each(printNodeInfo);
-    std::cout << std::endl;
-
-    std::cout << "Red-Black Tree:" << std::endl;
-    redBlackTree.Dump();
-    redBlackTree.for_each(printNodeInfo);
-    std::cout << std::endl;
 
     return 0;
 }

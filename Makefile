@@ -6,6 +6,9 @@ SRC_DIR     = src
 CC     = g++
 CFLAGS = -Wall -Wextra -g -std=c++11 -I$(PWD)/$(INCLUDE_DIR)
 
+debug: CFLAGS += -DDEBUG=1
+debug: all
+
 binTree: $(SRC_DIR)/binTree.cpp
 	$(CC) $(CFLAGS) -o $@ $<
 
