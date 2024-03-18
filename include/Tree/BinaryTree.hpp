@@ -4,8 +4,11 @@
 #include <algorithm>
 #include <cstddef>
 #include <functional>
+#include <iostream>
 #include <memory>
+#include <ostream>
 #include <sstream>
+#include <string>
 #include <vector>
 
 #include "BinaryNode.hpp"

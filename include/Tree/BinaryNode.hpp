@@ -2,6 +2,7 @@
 #define BINARY_NODE_HPP
 
 #include <algorithm>
+#include <cstddef>
 #include <iostream>
 #include <memory>
 

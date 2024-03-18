@@ -1,7 +1,11 @@
 #ifndef BINARY_SEARCH_TREE_HPP
 #define BINARY_SEARCH_TREE_HPP
 
+#include <memory>
+#include <stdexcept>
+
 #include "BinaryTree.hpp"
+#include "Tree/BinaryNode.hpp"
 
 template <typename T> class BinarySearchTree : public BinaryTree<T> {
    public:
