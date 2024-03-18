@@ -1,0 +1,4 @@
+Structure;Insertion Time of 10000 keys (seconds);Rotations
+BinarySearchTree;0.00938231;0
+AVLTree;1.51668;6949
+RedBlackTree;0.0386814;11853
