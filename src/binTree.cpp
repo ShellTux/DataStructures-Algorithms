@@ -1,11 +1,16 @@
 #include <array>
 #include <cstddef>
+#include <cstdlib>
 #include <iostream>
+#include <limits>
+#include <memory>
 #include <ostream>
 #include <random>
 #include <unordered_set>
 
 #include "Tree/AVLTree.hpp"
+#include "Tree/BinaryNode.hpp"
+#include "Tree/BinarySearchTree.hpp"
 #include "Tree/RedBlackTree.hpp"
 
 /* #define CHAVES 1000000 */
