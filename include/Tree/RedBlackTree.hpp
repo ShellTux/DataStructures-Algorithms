@@ -29,8 +29,10 @@ template <typename T> class RedBlackTree : public BinarySearchTree<T> {
 
         if (newNode->data < node->data) {
             node->left = insertHelper(node->left, newNode);
-        } else {
+        } else if (newNode->data > node->data) {
             node->right = insertHelper(node->right, newNode);
+        } else {
+            return node;
         }
 
         // Fix red-red violation

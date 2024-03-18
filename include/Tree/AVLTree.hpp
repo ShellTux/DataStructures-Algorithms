@@ -39,8 +39,10 @@ template <typename T> class AVLTree : public BinarySearchTree<T> {
 
         if (value < node->data) {
             node->left = insertHelper(node->left, value);
-        } else {
+        } else if (value > node->data) {
             node->right = insertHelper(node->right, value);
+        } else {
+            return node;
         }
 
         // Perform balancing after insertion
