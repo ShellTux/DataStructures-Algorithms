@@ -1,7 +1,9 @@
 #include <array>
+#include <chrono>
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <ostream>
@@ -13,14 +15,15 @@
 #include "Tree/RedBlackTree.hpp"
 #include "Tree/print.hpp"
 #include "generator.hpp"
+#include "time.hpp"
 
-#define BENCHMARK_KEYS 1000000
+#define BENCHMARK_KEYS 10000
 #define VISUALIZE_KEYS 10
 
 #define FLAGS                                                             \
     WRAPPER(HELP, 0, "-h", "--help", "Display this help message")         \
     WRAPPER(VERSION, 1, "-v", "--version", "Display version information") \
-    WRAPPER(VISUALIZE, 2, "-V", "--visualize", "Visualize Binary Trees") \
+    WRAPPER(VISUALIZE, 2, "-V", "--visualize", "Visualize Binary Trees")  \
     WRAPPER(BENCHMARK, 3, "-B", "--benchmark", "Benchmark Binary Trees")
 
 typedef enum {
@@ -80,24 +83,24 @@ int main(int argc, char** argv) {
         usage(argv[0]);
     }
 
-#define WRAPPER(letter, repeated_percentage)                       \
-    {                                                              \
-        std::array<int, VISUALIZE_KEYS> group##letter =                    \
-            generate_keys<int, VISUALIZE_KEYS>(repeated_percentage);       \
-                                                                   \
-        if (std::string(#letter) == "A") {                         \
-            std::sort(group##letter.begin(), group##letter.end()); \
-        } else if (std::string(#letter) == "B") {                  \
-            std::sort(group##letter.begin(), group##letter.end(),  \
-                      std::greater<int>());                        \
-        }                                                          \
-                                                                   \
-        std::cout << "Group " #letter << std::endl;                \
-        if (VISUALIZE_KEYS < 100) {                                        \
-            std::cout << group##letter << std::endl;               \
-        }                                                          \
-        print_repeated(group##letter);                             \
-        std::cout << std::endl;                                    \
+#define WRAPPER(letter, repeated_percentage)                          \
+    {                                                                 \
+        std::array<int, VISUALIZE_KEYS> group##letter =               \
+            Generate::Keys<int, VISUALIZE_KEYS>(repeated_percentage); \
+                                                                      \
+        if (std::string(#letter) == "A") {                            \
+            std::sort(group##letter.begin(), group##letter.end());    \
+        } else if (std::string(#letter) == "B") {                     \
+            std::sort(group##letter.begin(), group##letter.end(),     \
+                      std::greater<int>());                           \
+        }                                                             \
+                                                                      \
+        std::cout << "Group " #letter << std::endl;                   \
+        if (VISUALIZE_KEYS < 100) {                                   \
+            std::cout << group##letter << std::endl;                  \
+        }                                                             \
+        Array::print_repeated(group##letter);                         \
+        std::cout << std::endl;                                       \
     }
 #ifdef DEBUG
     LIST_GROUPS
@@ -139,6 +142,49 @@ int main(int argc, char** argv) {
         redBlackTree.Dump();
         redBlackTree.for_each(printNodeInfo);
         std::cout << std::endl;
+    }
+
+    if (enabled_flags & BENCHMARK) {
+        BinarySearchTree<int> binSearchTree{};
+        AVLTree<int> avlTree{};
+        RedBlackTree<int> redBlackTree{};
+
+        const auto keys = Generate::Keys<int, BENCHMARK_KEYS>(0);
+        Array::print(keys);
+
+        std::chrono::duration<double> duration;
+
+        MEASURE_TIME(for (const auto& key
+                          : keys) { binSearchTree.insert(key); }
+
+        );
+        std::cout << "Binary Search Tree Insertion of " << BENCHMARK_KEYS
+                  << " keys took: " << duration.count() << " seconds"
+                  << std::endl;
+
+        MEASURE_TIME(for (const auto& key
+                          : keys) { avlTree.insert(key); }
+
+        );
+        std::cout << "AVL Tree Insertion of " << BENCHMARK_KEYS
+                  << " keys took: " << duration.count() << " seconds"
+                  << std::endl;
+
+        MEASURE_TIME(for (const auto& key
+                          : keys) { redBlackTree.insert(key); }
+
+        );
+        std::cout << "Red-Black Tree Insertion of " << BENCHMARK_KEYS
+                  << " keys took: " << duration.count() << " seconds"
+                  << std::endl;
+
+        std::cout << std::endl;
+        std::cout << "Binary Search Tree Rotations: "
+                  << binSearchTree.rotation_count << std::endl;
+        std::cout << "AVL Tree Rotations:           " << avlTree.rotation_count
+                  << std::endl;
+        std::cout << "Red Black Tree Rotations:     "
+                  << redBlackTree.rotation_count << std::endl;
     }
 
     return 0;

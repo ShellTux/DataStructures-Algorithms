@@ -1,7 +1,10 @@
 #ifndef AVL_TREE
 #define AVL_TREE
 
+#include <memory>
+
 #include "BinarySearchTree.hpp"
+#include "Tree/BinaryNode.hpp"
 
 template <typename T> class AVLTree : public BinarySearchTree<T> {
    public:
@@ -12,6 +15,7 @@ template <typename T> class AVLTree : public BinarySearchTree<T> {
    private:
     std::shared_ptr<BinaryNode<T>> rotateRight(
         std::shared_ptr<BinaryNode<T>> node) {
+        this->rotation_count++;
         auto newRoot   = node->left;
         node->left     = newRoot->right;
         newRoot->right = node;
@@ -20,6 +24,7 @@ template <typename T> class AVLTree : public BinarySearchTree<T> {
 
     std::shared_ptr<BinaryNode<T>> rotateLeft(
         std::shared_ptr<BinaryNode<T>> node) {
+        this->rotation_count++;
         auto newRoot  = node->right;
         node->right   = newRoot->left;
         newRoot->left = node;

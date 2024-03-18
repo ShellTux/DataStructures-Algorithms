@@ -2,6 +2,7 @@
 #define BINARY_TREE_HPP
 
 #include <algorithm>
+#include <cstddef>
 #include <functional>
 #include <memory>
 #include <sstream>
@@ -12,12 +13,13 @@
 template <typename T> class BinaryTree {
    public:
     std::shared_ptr<BinaryNode<T>> root;
+    size_t rotation_count;
     enum class PrintType {
         LINEAR,
         TREE,
     };
 
-    BinaryTree() : root(nullptr) {}
+    BinaryTree() : root(nullptr), rotation_count(0) {}
     explicit BinaryTree(const T& value)
         : root(std::make_shared<BinaryNode<T>>(value)) {}
 

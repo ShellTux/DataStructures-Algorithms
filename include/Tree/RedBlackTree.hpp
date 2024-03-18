@@ -1,7 +1,10 @@
 #ifndef RED_BLACK_TREE_HPP
 #define RED_BLACK_TREE_HPP
 
+#include <memory>
+
 #include "BinarySearchTree.hpp"
+#include "Tree/BinaryNode.hpp"
 
 template <typename T> class RedBlackTree : public BinarySearchTree<T> {
    public:
@@ -50,6 +53,7 @@ template <typename T> class RedBlackTree : public BinarySearchTree<T> {
 
     std::shared_ptr<BinaryNode<T>> rotateLeft(
         std::shared_ptr<BinaryNode<T>> node) {
+        this->rotation_count++;
         auto newRoot   = node->right;
         node->right    = newRoot->left;
         newRoot->left  = node;
@@ -60,6 +64,7 @@ template <typename T> class RedBlackTree : public BinarySearchTree<T> {
 
     std::shared_ptr<BinaryNode<T>> rotateRight(
         std::shared_ptr<BinaryNode<T>> node) {
+        this->rotation_count++;
         auto newRoot   = node->left;
         node->left     = newRoot->right;
         newRoot->right = node;
