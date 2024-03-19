@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <array>
 #include <chrono>
 #include <cstddef>
@@ -5,9 +6,11 @@
 #include <cstring>
 #include <functional>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <ostream>
 #include <string>
+#include <utility>
 
 #include "Tree/AVLTree.hpp"
 #include "Tree/BinaryNode.hpp"
@@ -86,10 +89,11 @@ int main(int argc, char** argv) {
         usage(argv[0]);
     }
 
+    std::map<const char* const, std::array<int, BENCHMARK_KEYS>> group_keys{};
 #define WRAPPER(letter, repeated_percentage)                          \
     {                                                                 \
-        std::array<int, VISUALIZE_KEYS> group##letter =               \
-            Generate::Keys<int, VISUALIZE_KEYS>(repeated_percentage); \
+        std::array<int, BENCHMARK_KEYS> group##letter =               \
+            Generate::Keys<int, BENCHMARK_KEYS>(repeated_percentage); \
                                                                       \
         if (std::string(#letter) == "A") {                            \
             std::sort(group##letter.begin(), group##letter.end());    \
@@ -98,16 +102,16 @@ int main(int argc, char** argv) {
                       std::greater<int>());                           \
         }                                                             \
                                                                       \
-        std::cout << "Group " #letter << std::endl;                   \
-        if (VISUALIZE_KEYS < 100) {                                   \
+        if (BENCHMARK_KEYS < 100) {                                   \
+            std::cout << "Group " #letter << std::endl;               \
             std::cout << group##letter << std::endl;                  \
+            Array::print_repeated(group##letter);                     \
+            std::cout << std::endl;                                   \
         }                                                             \
-        Array::print_repeated(group##letter);                         \
-        std::cout << std::endl;                                       \
+                                                                      \
+        group_keys.insert(std::make_pair(#letter, group##letter));    \
     }
-#ifdef DEBUG
     LIST_GROUPS
-#endif
 #undef WRAPPER
 
     if (enabled_flags & VISUALIZE) {
@@ -159,22 +163,22 @@ int main(int argc, char** argv) {
 
         std::chrono::duration<double> duration;
 
-        MEASURE_TIME(for (const auto& key
-                          : keys) { binSearchTree.insert(key); }
-
-        , BENCHMARK_ITERATIONS);
+        MEASURE_TIME(
+            for (const auto& key
+                 : keys) { binSearchTree.insert(key); },
+            BENCHMARK_ITERATIONS);
         std::chrono::duration<double> binSearchTreeDuration = duration;
 
-        MEASURE_TIME(for (const auto& key
-                          : keys) { avlTree.insert(key); }
-
-        , BENCHMARK_ITERATIONS);
+        MEASURE_TIME(
+            for (const auto& key
+                 : keys) { avlTree.insert(key); },
+            BENCHMARK_ITERATIONS);
         std::chrono::duration<double> avlTreeDuration = duration;
 
-        MEASURE_TIME(for (const auto& key
-                          : keys) { redBlackTree.insert(key); }
-
-        , BENCHMARK_ITERATIONS);
+        MEASURE_TIME(
+            for (const auto& key
+                 : keys) { redBlackTree.insert(key); },
+            BENCHMARK_ITERATIONS);
         std::chrono::duration<double> redBlackTreeDuration = duration;
 
         if (enabled_flags & CSV_FORMAT) {
