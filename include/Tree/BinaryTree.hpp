@@ -7,6 +7,7 @@
 #include <iostream>
 #include <memory>
 #include <ostream>
+#include <queue>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -107,7 +108,30 @@ template <typename T> class BinaryTree {
 
     std::shared_ptr<BinaryNode<T>> insertHelper(
         std::shared_ptr<BinaryNode<T>> node, const T& value) {
-	    return nullptr;
+        if (node == nullptr) {
+            return std::make_shared<BinaryNode<T>>(value);
+        }
+
+        std::queue<std::shared_ptr<BinaryNode<T>>> queue;
+        queue.push(node);
+
+        while (!queue.empty()) {
+            std::shared_ptr<BinaryNode<T>> current = queue.front();
+            queue.pop();
+
+            if (current->left == nullptr) {
+                current->left = std::make_shared<BinaryNode<T>>(value);
+                break;
+            } else if (current->right == nullptr) {
+                current->right = std::make_shared<BinaryNode<T>>(value);
+                break;
+            } else {
+                queue.push(current->left);
+                queue.push(current->right);
+            }
+        }
+
+        return node;
     }
 
     struct cell_display {
