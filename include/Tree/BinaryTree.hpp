@@ -105,6 +105,11 @@ template <typename T> class BinaryTree {
         for_each_helper(node->right, func);
     }
 
+    std::shared_ptr<BinaryNode<T>> insertHelper(
+        std::shared_ptr<BinaryNode<T>> node, const T& value) {
+	    return nullptr;
+    }
+
     struct cell_display {
         std::string valstr;
         bool present;
