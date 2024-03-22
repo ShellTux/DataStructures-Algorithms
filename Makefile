@@ -15,7 +15,7 @@ binTree: $(SRC_DIR)/binTree.cpp
 clean:
 	rm -f binTree
 
-relatorio.pdf: docs/relatorio.md
+relatorio.pdf: docs/report.md
 	pandoc --standalone --resource-path=assets --output $@ $<
 
 archive: AED-LuísGóis.zip
