@@ -15,6 +15,7 @@
 #include "Tree/AVLTree.hpp"
 #include "Tree/BinaryNode.hpp"
 #include "Tree/BinarySearchTree.hpp"
+#include "Tree/BinaryTree.hpp"
 #include "Tree/RedBlackTree.hpp"
 #include "Tree/print.hpp"
 #include "generator.hpp"
@@ -90,6 +91,7 @@ int main(int argc, char** argv) {
     }
 
     if (enabled_flags & VISUALIZE) {
+        BinaryTree<int> binTree{};
         BinarySearchTree<int> binSearchTree{};
         AVLTree<int> avlTree{};
         RedBlackTree<int> redBlackTree{};
@@ -98,6 +100,7 @@ int main(int argc, char** argv) {
         Array::print(keys);
 
         for (const auto& key : keys) {
+            binTree.insert(key);
             binSearchTree.insert(key);
             avlTree.insert(key);
             redBlackTree.insert(key);
@@ -110,20 +113,16 @@ int main(int argc, char** argv) {
                           << ", Size: " << element->size() << std::endl;
             };
 
-        std::cout << "Binary Search Tree:" << std::endl;
-        binSearchTree.Dump();
-        binSearchTree.for_each(printNodeInfo);
-        std::cout << std::endl;
+#define PRINT_FORMAT_VISUALIZE(STRUCTURE_TEXT, STRUCTURE) \
+    std::cout << STRUCTURE_TEXT ":" << std::endl;         \
+    STRUCTURE.Dump();                                     \
+    STRUCTURE.for_each(printNodeInfo);                    \
+    std::cout << std::endl;
 
-        std::cout << "AVL Tree:" << std::endl;
-        avlTree.Dump();
-        avlTree.for_each(printNodeInfo);
-        std::cout << std::endl;
-
-        std::cout << "Red-Black Tree:" << std::endl;
-        redBlackTree.Dump();
-        redBlackTree.for_each(printNodeInfo);
-        std::cout << std::endl;
+        PRINT_FORMAT_VISUALIZE("Binary Tree", binTree);
+        PRINT_FORMAT_VISUALIZE("Binary Search Tree", binSearchTree);
+        PRINT_FORMAT_VISUALIZE("AVL Tree", avlTree);
+        PRINT_FORMAT_VISUALIZE("Red-Black Tree", redBlackTree);
     }
 
     if (enabled_flags & BENCHMARK) {
@@ -162,6 +161,7 @@ int main(int argc, char** argv) {
             const char* const letter              = it->first;
             std::array<int, BENCHMARK_KEYS>& keys = it->second;
 
+            BinaryTree<int> binTree{};
             BinarySearchTree<int> binSearchTree{};
             AVLTree<int> avlTree{};
             RedBlackTree<int> redBlackTree{};
@@ -171,6 +171,12 @@ int main(int argc, char** argv) {
             }
 
             std::chrono::duration<double> duration;
+
+            MEASURE_TIME(
+                for (const auto& key
+                     : keys) { binTree.insert(key); },
+                BENCHMARK_ITERATIONS);
+            std::chrono::duration<double> binTreeDuration = duration;
 
             MEASURE_TIME(
                 for (const auto& key
@@ -191,35 +197,40 @@ int main(int argc, char** argv) {
             std::chrono::duration<double> redBlackTreeDuration = duration;
 
             if (enabled_flags & CSV_FORMAT) {
-                std::cout << letter << ";BinarySearchTree;"
-                          << binSearchTreeDuration.count() << ";"
-                          << binSearchTree.rotation_count << std::endl;
-                std::cout << letter << ";AVLTree;" << avlTreeDuration.count()
-                          << ";" << avlTree.rotation_count << std::endl;
-                std::cout << letter << ";RedBlackTree;"
-                          << redBlackTreeDuration.count() << ";"
-                          << redBlackTree.rotation_count << std::endl;
+#define CSV_FORMAT_PRINT(feature, duration, structure)                \
+    std::cout << letter << ";" feature ";" << duration.count() << ";" \
+              << structure.rotation_count << std::endl;
+
+                CSV_FORMAT_PRINT("BinaryTree", binTreeDuration, binTree);
+                CSV_FORMAT_PRINT("BinarySearchTree", binSearchTreeDuration,
+                                 binSearchTree);
+                CSV_FORMAT_PRINT("AVLTree", avlTreeDuration, avlTree);
+                CSV_FORMAT_PRINT("RedBlackTree", redBlackTreeDuration,
+                                 redBlackTree);
             } else {
                 std::cout << "Group " << letter << std::endl;
-                std::cout << "Binary Search Tree Insertion of "
-                          << BENCHMARK_KEYS
-                          << " keys took: " << binSearchTreeDuration.count()
-                          << " seconds" << std::endl;
+#define FORMAT_PRINT_INSERTION(structure, duration)               \
+    std::cout << structure " Insertion of " << BENCHMARK_KEYS     \
+              << " keys took: " << duration.count() << " seconds" \
+              << std::endl;
 
-                std::cout << "AVL Tree Insertion of " << BENCHMARK_KEYS
-                          << " keys took: " << avlTreeDuration.count()
-                          << " seconds" << std::endl;
-                std::cout << "Red-Black Tree Insertion of " << BENCHMARK_KEYS
-                          << " keys took: " << redBlackTreeDuration.count()
-                          << " seconds" << std::endl;
+                FORMAT_PRINT_INSERTION("Binary Tree", binTreeDuration);
+                FORMAT_PRINT_INSERTION("Binary Search Tree",
+                                       binSearchTreeDuration);
+                FORMAT_PRINT_INSERTION("AVL Tree", avlTreeDuration);
+                FORMAT_PRINT_INSERTION("Red-Black Tree", redBlackTreeDuration);
 
                 std::cout << std::endl;
-                std::cout << "Binary Search Tree Rotations: "
-                          << binSearchTree.rotation_count << std::endl;
-                std::cout << "AVL Tree Rotations:           "
-                          << avlTree.rotation_count << std::endl;
-                std::cout << "Red Black Tree Rotations:     "
-                          << redBlackTree.rotation_count << std::endl;
+
+#define FORMAT_PRINT_ROTATIONS(structure, count) \
+    std::cout << structure " Rotations: " << count << std::endl;
+
+                FORMAT_PRINT_ROTATIONS("Binary Tree", binTree.rotation_count);
+                FORMAT_PRINT_ROTATIONS("Binary Search Tree",
+                                       binSearchTree.rotation_count);
+                FORMAT_PRINT_ROTATIONS("AVL Tree", avlTree.rotation_count);
+                FORMAT_PRINT_ROTATIONS("Red Black Tree",
+                                       redBlackTree.rotation_count);
                 std::cout << std::endl;
             }
         }
