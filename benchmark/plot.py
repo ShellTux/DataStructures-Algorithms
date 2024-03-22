@@ -1,7 +1,17 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import os
+import pandas as pd
+import sys
+
+def usage(program_name: str):
+    print(f'Usage: {program_name} <show | save>')
+    sys.exit(1)
+
+if len(sys.argv) != 2:
+    usage(sys.argv[0])
+
+SHOW_GRAPHS: bool = sys.argv[1] == 'show'
 
 base_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -55,3 +65,6 @@ for feature in ('Insertion Time of 10000 keys (seconds)', 'Rotations'):
             feature,
             image_filepath=f'{base_dir}/{feature}.png'
             )
+
+if SHOW_GRAPHS:
+    plt.show()
