@@ -1,4 +1,13 @@
-Structure;Insertion Time of 10000 keys (seconds);Rotations
-BinarySearchTree;0.00938231;0
-AVLTree;1.51668;6949
-RedBlackTree;0.0386814;11853
+Group;Structure;Insertion Time of 10000 keys (seconds);Rotations
+A;BinarySearchTree;1.79706;0
+A;AVLTree;0.941243;8986
+A;RedBlackTree;0.0348073;8987
+B;BinarySearchTree;1.65313;0
+B;AVLTree;0.881736;8986
+B;RedBlackTree;0.0464232;8982
+C;BinarySearchTree;0.00832497;0
+C;AVLTree;1.6747;6225
+C;RedBlackTree;0.040491;10691
+D;BinarySearchTree;0.00568961;0
+D;AVLTree;0.22321;697
+D;RedBlackTree;0.0276826;1165
