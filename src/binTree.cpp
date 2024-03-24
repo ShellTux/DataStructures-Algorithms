@@ -22,8 +22,10 @@
 #include "time.hpp"
 
 #define BENCHMARK_KEYS 10000
+#define KEYS_PER_REPORT 1000
 #define VISUALIZE_KEYS 10
 #define BENCHMARK_ITERATIONS 10
+#define BENCHMARK_THRESHOLD_SECONDS 5 * 60
 
 #define FLAGS                                                             \
     WRAPPER(HELP, 0, "-h", "--help", "Display this help message")         \
@@ -172,28 +174,44 @@ int main(int argc, char** argv) {
 
             std::chrono::duration<double> duration;
 
-            MEASURE_TIME(
-                for (const auto& key
-                     : keys) { binTree.insert(key); },
-                BENCHMARK_ITERATIONS);
+	    MEASURE_TIME(
+			    binTree.insert(keys[i]),
+			    i,
+			    keys.size(),
+			    KEYS_PER_REPORT,
+			    BENCHMARK_ITERATIONS,
+			    BENCHMARK_THRESHOLD_SECONDS
+			);
             std::chrono::duration<double> binTreeDuration = duration;
 
-            MEASURE_TIME(
-                for (const auto& key
-                     : keys) { binSearchTree.insert(key); },
-                BENCHMARK_ITERATIONS);
+	    MEASURE_TIME(
+			    binSearchTree.insert(keys[i]),
+			    i,
+			    keys.size(),
+			    KEYS_PER_REPORT,
+			    BENCHMARK_ITERATIONS,
+			    BENCHMARK_THRESHOLD_SECONDS
+			);
             std::chrono::duration<double> binSearchTreeDuration = duration;
 
-            MEASURE_TIME(
-                for (const auto& key
-                     : keys) { avlTree.insert(key); },
-                BENCHMARK_ITERATIONS);
+	    MEASURE_TIME(
+			    avlTree.insert(keys[i]),
+			    i,
+			    keys.size(),
+			    KEYS_PER_REPORT,
+			    BENCHMARK_ITERATIONS,
+			    BENCHMARK_THRESHOLD_SECONDS
+			);
             std::chrono::duration<double> avlTreeDuration = duration;
 
-            MEASURE_TIME(
-                for (const auto& key
-                     : keys) { redBlackTree.insert(key); },
-                BENCHMARK_ITERATIONS);
+	    MEASURE_TIME(
+			    redBlackTree.insert(keys[i]),
+			    i,
+			    keys.size(),
+			    KEYS_PER_REPORT,
+			    BENCHMARK_ITERATIONS,
+			    BENCHMARK_THRESHOLD_SECONDS
+			);
             std::chrono::duration<double> redBlackTreeDuration = duration;
 
             if (enabled_flags & CSV_FORMAT) {
