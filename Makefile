@@ -1,5 +1,11 @@
 all: binTree
 
+VENV       := venv
+PYTHON     := ./$(VENV)/bin/python3
+PIP        := ./$(VENV)/bin/pip
+PYTEST     := ./$(VENV)/bin/pytest
+PRE_COMMIT := ./$(VENV)/bin/pre-commit
+
 INCLUDE_DIR = include
 SRC_DIR     = src
 
@@ -13,6 +19,7 @@ binTree: $(SRC_DIR)/binTree.cpp
 	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
+	rm -rf $(VENV)
 	rm -f binTree
 
 relatorio.pdf: docs/report.md
@@ -35,3 +42,9 @@ AED-LuísGóis.zip: relatorio.pdf
 	@echo '  Add:' | tee --append $@
 
 	@for flag in $(CFLAGS) ; do echo "    - $$flag" | tee --append $@ ; done
+
+$(VENV)/bin/activate: requirements.txt
+	python3 -m venv $(VENV)
+	$(PIP) install --requirement requirements.txt
+
+venv: $(VENV)/bin/activate
