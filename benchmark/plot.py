@@ -58,7 +58,7 @@ def plot_grouped_bar(group1: str, group2: str, feature: str, *, image_filepath: 
     if len(image_filepath) != 0:
         plt.savefig(image_filepath)
 
-for feature in ('Insertion Time of 10000 keys (seconds)', 'Rotations'):
+for feature in features:
     plot_grouped_bar(
             GROUP1,
             GROUP2,
