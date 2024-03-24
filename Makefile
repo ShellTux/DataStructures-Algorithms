@@ -22,9 +22,6 @@ clean:
 	rm -rf $(VENV)
 	rm -f binTree
 
-relatorio.pdf: docs/report.md
-	pandoc --standalone --resource-path=assets --output $@ $<
-
 archive: AED-LuísGóis.zip
 
 .PHONY: AED-LuísGóis.zip
