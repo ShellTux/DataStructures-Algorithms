@@ -1,3 +1,24 @@
+ # Project                                      ___       _______  _______
+ #                                             /   \     |   ____||       \
+ #                                            /  ^  \    |  |__   |  .--.  |
+ #                                           /  /_\  \   |   __|  |  |  |  |
+ #                                          /  _____  \  |  |____ |  '--'  |
+ #                                         /__/     \__\ |_______||_______/
+ #
+ # Author: Luís Góis
+ #
+ # This software is licensed as described in the file LICENSE, which
+ # you should have received as part of this distribution.
+ #
+ # You may opt to use, copy, modify, merge, publish, distribute and/or sell
+ # copies of the Software, and permit persons to whom the Software is
+ # furnished to do so, under the terms of the LICENSE file.
+ #
+ # This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
+ # KIND, either express or implied.
+ #
+ #
+
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -34,7 +55,13 @@ for feature in features:
 
 print(means)
 
-def plot_grouped_bar(group1: str, group2: str, feature: str, *, image_filepath: str = ''):
+def plot_grouped_bar(
+        group1: str,
+        group2: str,
+        feature: str,
+        *,
+        image_filepath: str = ''
+        ):
     if any([len(arg) == 0 for arg in (group1, group2, feature)]):
         return
 
