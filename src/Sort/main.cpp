@@ -20,6 +20,8 @@
  *
  ***************************************************************************/
 
+#include <algorithm>
+#include <array>
 #include <cstddef>
 #include <iostream>
 #include <ostream>
@@ -33,20 +35,39 @@
     WRAPPER(Sort::Insertion) \
     WRAPPER(Sort::Heap)
 
-int main() {
-    const auto randomArray = Array::Generate::Random<std::size_t, 10>(1, 100);
-    auto array             = randomArray;
+constexpr std::size_t SIZE = 10;
 
-#define WRAPPER(ALGORITHM)                                                   \
-    {                                                                        \
-        LINE_SEPARATING;                                                     \
-        std::cout << "Before Sorting:" << std::endl;                         \
-        Array::Print(randomArray);                                           \
-        array = randomArray;                                                 \
-        ALGORITHM(array);                                                    \
+int main() {
+    const auto randomArray = Array::Generate::Random<std::size_t, SIZE>(1, 100);
+    auto groupA            = randomArray;
+    auto groupB            = randomArray;
+    auto groupC            = randomArray;
+
+    std::sort(groupA.begin(), groupA.end(),
+              [](const size_t a, const size_t b) { return a < b; });
+
+    std::sort(groupB.begin(), groupB.end(),
+              [](const size_t a, const size_t b) { return a > b; });
+
+    std::cout << "Group A: ";
+    Array::Print(groupA);
+    std::cout << "Group B: ";
+    Array::Print(groupB);
+    std::cout << "Group C: ";
+    Array::Print(groupC);
+
+    auto array = randomArray;
+
+#define WRAPPER(ALGORITHM)                                           \
+    {                                                                \
+        LINE_SEPARATING;                                             \
+        std::cout << "Before Sorting:" << std::endl;                 \
+        Array::Print(randomArray);                                   \
+        array = randomArray;                                         \
+        ALGORITHM(array);                                            \
         std::cout << "After Sorting (" #ALGORITHM "):" << std::endl; \
-        Array::Print(array);                                                 \
-        LINE_SEPARATING;                                                     \
+        Array::Print(array);                                         \
+        LINE_SEPARATING;                                             \
     }
     SORTING_ALGORITHMS
 #undef WRAPPER
