@@ -32,8 +32,8 @@ namespace Sort {
 
 template <typename T, std::size_t N> void Insertion(std::array<T, N>& arr) {
     for (std::size_t i = 1; i < N; ++i) {
-        T key         = arr[i];
-	std::int64_t j = i - 1;
+        const T key    = arr[i];
+        std::int64_t j = i - 1;
 
         while (j >= 0 && arr[j] > key) {
             arr[j + 1] = arr[j];
@@ -52,7 +52,7 @@ template <typename T, std::size_t N> void Heap(std::array<T, N>& array) {
 template <typename T, std::size_t N>
 void Quick(std::array<T, N>& arr, const int low, const int high) {
     if (low < high) {
-        int pivot = partition(arr, low, high);
+        const int pivot = partition(arr, low, high);
 
         quickSort(arr, low, pivot - 1);
         quickSort(arr, pivot + 1, high);
@@ -61,8 +61,8 @@ void Quick(std::array<T, N>& arr, const int low, const int high) {
 
 template <typename T, std::size_t N>
 int partition(std::array<T, N>& arr, const int low, const int high) {
-    T pivot = arr[high];
-    int i   = low - 1;
+    const T pivot = arr[high];
+    int i         = low - 1;
 
     for (int j = low; j <= high - 1; j++) {
         if (arr[j] < pivot) {
