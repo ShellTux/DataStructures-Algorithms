@@ -36,10 +36,10 @@
     WRAPPER(Sort::Insertion) \
     WRAPPER(Sort::Heap)
 
-constexpr std::size_t SIZE = 10;
+constexpr std::size_t SIZE = 100;
 
 int main() {
-    const auto randomArray = Array::Generate::Random<std::size_t, SIZE>(1, 100);
+    const auto randomArray = Array::Generate::Random<std::size_t, SIZE>(1, SIZE * 100);
     auto groupA            = randomArray;
     auto groupB            = randomArray;
     auto groupC            = randomArray;
