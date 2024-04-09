@@ -1,5 +1,5 @@
-#ifndef SORT_INSERTION_HPP
-#define SORT_INSERTION_HPP
+#ifndef SORT_HEAP_HPP
+#define SORT_HEAP_HPP
 
 /***************************************************************************
  * Project                                      ___       _______  _______
@@ -23,26 +23,17 @@
  *
  ***************************************************************************/
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
-#include <cstdint>
 
 namespace Sort {
 
-template <typename T, std::size_t N> void Insertion(std::array<T, N>& arr) {
-    for (std::size_t i = 1; i < N; ++i) {
-        const T key    = arr[i];
-        std::int64_t j = i - 1;
-
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-
-        arr[j + 1] = key;
-    }
+template <typename T, std::size_t N> void Heap(std::array<T, N>& array) {
+    std::make_heap(array.begin(), array.end());
+    std::sort_heap(array.begin(), array.end());
 }
 
 }  // namespace Sort
 
-#endif  // !SORT_INSERTION_HPP
+#endif  // !SORT_HEAP_HPP

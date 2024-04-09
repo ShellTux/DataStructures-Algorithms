@@ -27,6 +27,7 @@
 #include <ostream>
 
 #include "Array/Print.hpp"
+#include "Sort/Heap.hpp"
 #include "Sort/Insertion.hpp"
 
 #define LINE_SEPARATING std::cout << "----------------\n"
