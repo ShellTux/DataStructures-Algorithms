@@ -49,12 +49,6 @@ sorting: $(SOURCES:%=$(OBJ_DIR)/$(SRC_DIR)/%.cpp.o)
 $(TARGETS): %:
 	$(CC) $(CFLAGS) -o $@ $^
 
-$(OBJ_DIR)/%.md: %.md
-	mkdir --parents `dirname $@`
-	cp $< $@
-	sed -i 's|/assets|assets|g' $@
-	sed -i 's|date: date|date: '$(shell date +'%d/%m/%Y')'|' $@
-
 archive: $(ARCHIVE)
 
 .PHONY: $(ARCHIVE)
