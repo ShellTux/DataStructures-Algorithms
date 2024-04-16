@@ -30,6 +30,10 @@ namespace Sort {
 
 template <typename T, std::size_t N>
 void Swap(std::array<T, N> &array, const std::size_t i, const std::size_t j) {
+    if (i > N || j > N) {
+        return;
+    }
+
     T t      = array[i];
     array[i] = array[j];
     array[j] = t;
