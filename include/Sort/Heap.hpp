@@ -30,6 +30,7 @@
 
 namespace Sort {
 
+// https://www.geeksforgeeks.org/heap-sort/
 template <typename T, std::size_t S>
 void Heapify(std::array<T, S>& array, int N, int i) {
     int largest = i;
@@ -48,7 +49,7 @@ void Heapify(std::array<T, S>& array, int N, int i) {
         /* swap(array[i], array[largest]); */
 
         // Recursively heapify the affected sub-tree
-	Sort::Heapify(array, N, largest);
+        Sort::Heapify(array, N, largest);
     }
 }
 
