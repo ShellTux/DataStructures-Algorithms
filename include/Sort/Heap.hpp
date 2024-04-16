@@ -23,15 +23,50 @@
  *
  ***************************************************************************/
 
-#include <algorithm>
 #include <array>
 #include <cstddef>
 
+#include "Sort/Swap.hpp"
+
 namespace Sort {
 
-template <typename T, std::size_t N> void Heap(std::array<T, N>& array) {
-    std::make_heap(array.begin(), array.end());
-    std::sort_heap(array.begin(), array.end());
+template <typename T, std::size_t S>
+void Heapify(std::array<T, S>& array, int N, int i) {
+    int largest = i;
+    int l       = 2 * i + 1;
+    int r       = 2 * i + 2;
+
+    if (l < N && array[l] > array[largest]) largest = l;
+
+    // If right child is larger than largest
+    // so far
+    if (r < N && array[r] > array[largest]) largest = r;
+
+    // If largest is not root
+    if (largest != i) {
+        Sort::Swap(array, i, largest);
+        /* swap(array[i], array[largest]); */
+
+        // Recursively heapify the affected sub-tree
+	Sort::Heapify(array, N, largest);
+    }
+}
+
+template <typename T, std::size_t S>
+void Heap(std::array<T, S>& array, std::size_t N = S) {
+    // Build heap (rearrange array)
+    for (int i = N / 2 - 1; i >= 0; i--) {
+        Sort::Heapify(array, N, i);
+    }
+
+    // One by one extract an element from heap
+    for (int i = N - 1; i > 0; i--) {
+        // Move current root to end
+        Sort::Swap(array, 0, i);
+
+        // call max heapify on the reduced heap
+        Sort::Heapify(array, i, 0);
+    }
 }
 
 }  // namespace Sort
