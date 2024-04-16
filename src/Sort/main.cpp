@@ -39,10 +39,11 @@
 constexpr std::size_t SIZE = 100;
 
 int main() {
-    const auto randomArray = Array::Generate::Random<std::size_t, SIZE>(1, SIZE * 100);
-    auto groupA            = randomArray;
-    auto groupB            = randomArray;
-    auto groupC            = randomArray;
+    const auto randomArray =
+        Array::Generate::Random<std::size_t, SIZE>(1, SIZE * 100);
+    auto groupA = randomArray;
+    auto groupB = randomArray;
+    auto groupC = randomArray;
 
     std::sort(groupA.begin(), groupA.end(),
               [](const size_t a, const size_t b) { return a < b; });
