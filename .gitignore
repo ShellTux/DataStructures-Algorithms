@@ -1,6 +1,7 @@
 binTree
 .clangd
 /*.csv
+*.odt
 *.pdf
 sorting
 *.zip
