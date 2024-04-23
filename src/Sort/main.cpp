@@ -38,7 +38,7 @@
     WRAPPER(Sort::Heap)      \
     WRAPPER(Sort::Quick)
 
-constexpr std::size_t SIZE = 100;
+constexpr std::size_t SIZE = 10;
 
 int main() {
     const auto randomArray =
