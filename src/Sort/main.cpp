@@ -29,12 +29,14 @@
 #include "Array/Print.hpp"
 #include "Sort/Heap.hpp"
 #include "Sort/Insertion.hpp"
+#include "Sort/Quick.hpp"
 
 #define LINE_SEPARATING std::cout << "----------------\n"
 
 #define SORTING_ALGORITHMS   \
     WRAPPER(Sort::Insertion) \
-    WRAPPER(Sort::Heap)
+    WRAPPER(Sort::Heap)      \
+    WRAPPER(Sort::Quick)
 
 constexpr std::size_t SIZE = 100;
 
