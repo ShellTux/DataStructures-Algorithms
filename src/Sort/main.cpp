@@ -33,6 +33,8 @@
 
 #define LINE_SEPARATING std::cout << "----------------\n"
 
+#define MAX_SIZE_PRINT 15
+
 #define SORTING_ALGORITHMS   \
     WRAPPER(Sort::Insertion) \
     WRAPPER(Sort::Heap)      \
@@ -53,25 +55,31 @@ int main() {
     std::sort(groupB.begin(), groupB.end(),
               [](const size_t a, const size_t b) { return a > b; });
 
-    std::cout << "Group A: ";
-    Array::Print(groupA);
-    std::cout << "Group B: ";
-    Array::Print(groupB);
-    std::cout << "Group C: ";
-    Array::Print(groupC);
+    if (SIZE <= MAX_SIZE_PRINT) {
+        std::cout << "Group A: ";
+        Array::Print(groupA);
+        std::cout << "Group B: ";
+        Array::Print(groupB);
+        std::cout << "Group C: ";
+        Array::Print(groupC);
+    }
 
     auto array = randomArray;
 
-#define WRAPPER(ALGORITHM)                                           \
-    {                                                                \
-        LINE_SEPARATING;                                             \
-        std::cout << "Before Sorting:" << std::endl;                 \
-        Array::Print(randomArray);                                   \
-        array = randomArray;                                         \
-        ALGORITHM(array);                                            \
-        std::cout << "After Sorting (" #ALGORITHM "):" << std::endl; \
-        Array::Print(array);                                         \
-        LINE_SEPARATING;                                             \
+#define WRAPPER(ALGORITHM)                                               \
+    {                                                                    \
+        if (SIZE <= MAX_SIZE_PRINT) {                                    \
+            LINE_SEPARATING;                                             \
+            std::cout << "Before Sorting:" << std::endl;                 \
+            Array::Print(randomArray);                                   \
+        }                                                                \
+        array = randomArray;                                             \
+        ALGORITHM(array);                                                \
+        if (SIZE <= MAX_SIZE_PRINT) {                                    \
+            std::cout << "After Sorting (" #ALGORITHM "):" << std::endl; \
+            Array::Print(array);                                         \
+            LINE_SEPARATING;                                             \
+        }                                                                \
     }
     SORTING_ALGORITHMS
 #undef WRAPPER
