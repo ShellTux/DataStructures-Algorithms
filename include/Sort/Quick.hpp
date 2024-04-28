@@ -25,6 +25,7 @@
 
 #include <array>
 #include <cstddef>
+#include <cstdint>
 
 #include "Sort/Swap.hpp"
 
@@ -53,27 +54,19 @@ int partition(std::array<T, N>& array, const int lowest_index,
 }
 
 template <typename T, std::size_t N>
-void Quick(std::array<T, N>& array, const std::size_t lowest_index = 0,
-           const std::size_t highest_index = N) {
-    if (N == 0 || N == 1) {
+void Quick(std::array<T, N>& array, const std::int64_t lowest_index = 0,
+           const std::int64_t highest_index = N) {
+    if (lowest_index >= highest_index) {
         return;
     }
 
-    if (lowest_index < highest_index) {
-        // pi is the partition return index of pivot
+    int partition_index = Sort::partition(array, lowest_index, highest_index);
 
-        /* const std::size_t pivot_index = 0.5 * (lowest_index + highest_index);
-         */
-
-        int partition_index =
-            Sort::partition(array, lowest_index, highest_index);
-
-        // Recursion Call
-        // smaller element than pivot goes left and
-        // higher element goes right
-	Sort::Quick(array, lowest_index, partition_index - 1);
-	Sort::Quick(array, partition_index + 1, highest_index);
-    }
+    // Recursion Call
+    // smaller element than pivot goes left and
+    // higher element goes right
+    Sort::Quick(array, lowest_index, partition_index - 1);
+    Sort::Quick(array, partition_index + 1, highest_index);
 }
 
 }  // namespace Sort
