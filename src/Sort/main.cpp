@@ -20,6 +20,8 @@
  *
  ***************************************************************************/
 
+#include "Sort/main.hpp"
+
 #include <algorithm>
 #include <array>
 #include <cstddef>
@@ -35,14 +37,55 @@
 
 #define MAX_SIZE_PRINT 15
 
-#define SORTING_ALGORITHMS   \
-    WRAPPER(Sort::Insertion) \
-    WRAPPER(Sort::Heap)      \
-    WRAPPER(Sort::Quick)
+#define SORTING_ALGORITHMS \
+    WRAPPER(Insertion)     \
+    WRAPPER(Heap)          \
+    WRAPPER(Quick)
 
 constexpr std::size_t SIZE = 10;
 
+#define SIZES                              \
+    WRAPPER(static_cast<std::size_t>(1e4)) \
+    WRAPPER(static_cast<std::size_t>(1e5)) \
+    WRAPPER(static_cast<std::size_t>(1e6))
+
+#define ITERATIONS 5
+
+void benchmark() {
+    for (std::size_t i = 0; i < ITERATIONS; ++i) {
+        {
+            const auto randomArray =
+                Array::Generate::Random<std::size_t,
+                                        static_cast<std::size_t>(1e4)>(1, 1e6);
+
+#define WRAPPER(ALGORITHM)                                             \
+    measure(randomArray, Algorithm::ALGORITHM, Dataset::A).printCSV(); \
+    measure(randomArray, Algorithm::ALGORITHM, Dataset::B).printCSV(); \
+    measure(randomArray, Algorithm::ALGORITHM, Dataset::C).printCSV();
+            SORTING_ALGORITHMS
+#undef WRAPPER
+        }
+
+        {
+            const auto randomArray =
+                Array::Generate::Random<std::size_t,
+                                        static_cast<std::size_t>(1e5)>(1, 1e6);
+
+#define WRAPPER(ALGORITHM)                                             \
+    measure(randomArray, Algorithm::ALGORITHM, Dataset::A).printCSV(); \
+    measure(randomArray, Algorithm::ALGORITHM, Dataset::B).printCSV(); \
+    measure(randomArray, Algorithm::ALGORITHM, Dataset::C).printCSV();
+            SORTING_ALGORITHMS
+#undef WRAPPER
+        }
+    }
+}
+
+#define BENCHMARK 1
 int main() {
+#if BENCHMARK
+	benchmark();
+#else
     const auto randomArray =
         Array::Generate::Random<std::size_t, SIZE>(1, SIZE * 100);
     auto groupA = randomArray;
@@ -74,7 +117,7 @@ int main() {
             Array::Print(randomArray);                                   \
         }                                                                \
         array = randomArray;                                             \
-        ALGORITHM(array);                                                \
+        Sort::ALGORITHM(array);                                          \
         if (SIZE <= MAX_SIZE_PRINT) {                                    \
             std::cout << "After Sorting (" #ALGORITHM "):" << std::endl; \
             Array::Print(array);                                         \
@@ -83,6 +126,7 @@ int main() {
     }
     SORTING_ALGORITHMS
 #undef WRAPPER
+#endif
 
     return 0;
 }
