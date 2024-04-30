@@ -31,14 +31,20 @@
 #include <ostream>
 #include <ratio>
 
+#include "Array/Print.hpp"
 #include "Sort/Heap.hpp"
 #include "Sort/Insertion.hpp"
 #include "Sort/Quick.hpp"
 
+#define SORTING_ALGORITHMS \
+    WRAPPER(Insertion)     \
+    WRAPPER(Heap)          \
+    WRAPPER(Quick)
+
 enum class Algorithm {
-    Insertion,
-    Heap,
-    Quick,
+#define WRAPPER(ALGORITHM) ALGORITHM,
+    SORTING_ALGORITHMS
+#undef WRAPPER
 };
 
 enum class Dataset {
@@ -135,29 +141,16 @@ DataPoint measure(const std::array<T, S> &randomArray,
     return DataPoint(algorithm, dataset, S, deltaTime.count());
 }
 
-template <typename T, const std::size_t S>
-void benchmark(const std::array<T, S> &randomArray) {
-    auto groupA = randomArray;
-    auto groupB = randomArray;
-    auto groupC = randomArray;
+template <typename T, const std::size_t SIZE>
+void benchmark(const std::size_t minimum, const std::size_t maximum) {
+    const auto randomArray = Array::Generate::Random<T, SIZE>(minimum, maximum);
 
-    std::sort(groupA.begin(), groupA.end(),
-              [](const size_t a, const size_t b) { return a < b; });
-
-    std::sort(groupB.begin(), groupB.end(),
-              [](const size_t a, const size_t b) { return a > b; });
-
-    auto array = randomArray;
-
-    using std::chrono::duration;
-    using clock = std::chrono::high_resolution_clock;
-    using std::chrono::time_point;
-
-    const time_point start = clock::now();
-    Sort::Insertion(groupA);
-    const duration<double> deltaTime = (clock::now() - start);
-    std::cout << "Time took for Insertion Sort of Group A: "
-              << deltaTime.count() << std::endl;
+#define WRAPPER(ALGORITHM)                                             \
+    measure(randomArray, Algorithm::ALGORITHM, Dataset::A).printCSV(); \
+    measure(randomArray, Algorithm::ALGORITHM, Dataset::B).printCSV(); \
+    measure(randomArray, Algorithm::ALGORITHM, Dataset::C).printCSV();
+    SORTING_ALGORITHMS
+#undef WRAPPER
 }
 
 #endif  // !SORT_MAIN_HPP

@@ -26,6 +26,7 @@
 #include <array>
 #include <cstddef>
 #include <iostream>
+#include <limits>
 #include <ostream>
 
 #include "Array/Print.hpp"
@@ -35,56 +36,26 @@
 
 #define LINE_SEPARATING std::cout << "----------------\n"
 
-#define MAX_SIZE_PRINT 15
+constexpr std::size_t SIZE           = 10;
+constexpr std::size_t MAX_SIZE_PRINT = 15;
+constexpr std::size_t ITERATIONS     = 5;
+constexpr std::size_t RANDOM_MIN     = std::numeric_limits<std::size_t>::min();
+constexpr std::size_t RANDOM_MAX     = std::numeric_limits<std::size_t>::max();
 
-#define SORTING_ALGORITHMS \
-    WRAPPER(Insertion)     \
-    WRAPPER(Heap)          \
-    WRAPPER(Quick)
-
-constexpr std::size_t SIZE = 10;
-
-#define SIZES                              \
-    WRAPPER(static_cast<std::size_t>(1e4)) \
-    WRAPPER(static_cast<std::size_t>(1e5)) \
-    WRAPPER(static_cast<std::size_t>(1e6))
-
-#define ITERATIONS 5
-
-void benchmark() {
-    for (std::size_t i = 0; i < ITERATIONS; ++i) {
-        {
-            const auto randomArray =
-                Array::Generate::Random<std::size_t,
-                                        static_cast<std::size_t>(1e4)>(1, 1e6);
-
-#define WRAPPER(ALGORITHM)                                             \
-    measure(randomArray, Algorithm::ALGORITHM, Dataset::A).printCSV(); \
-    measure(randomArray, Algorithm::ALGORITHM, Dataset::B).printCSV(); \
-    measure(randomArray, Algorithm::ALGORITHM, Dataset::C).printCSV();
-            SORTING_ALGORITHMS
-#undef WRAPPER
-        }
-
-        {
-            const auto randomArray =
-                Array::Generate::Random<std::size_t,
-                                        static_cast<std::size_t>(1e5)>(1, 1e6);
-
-#define WRAPPER(ALGORITHM)                                             \
-    measure(randomArray, Algorithm::ALGORITHM, Dataset::A).printCSV(); \
-    measure(randomArray, Algorithm::ALGORITHM, Dataset::B).printCSV(); \
-    measure(randomArray, Algorithm::ALGORITHM, Dataset::C).printCSV();
-            SORTING_ALGORITHMS
-#undef WRAPPER
-        }
-    }
-}
+#define SIZES    \
+    WRAPPER(1e3) \
+    WRAPPER(5e3) \
+    WRAPPER(1e4) \
+    WRAPPER(5e4) \
+    WRAPPER(1e5)
 
 #define BENCHMARK 1
 int main() {
 #if BENCHMARK
-	benchmark();
+#define WRAPPER(SIZE) \
+    benchmark<std::size_t, std::size_t(SIZE)>(RANDOM_MIN, RANDOM_MAX);
+    SIZES
+#undef WRAPPER
 #else
     const auto randomArray =
         Array::Generate::Random<std::size_t, SIZE>(1, SIZE * 100);
