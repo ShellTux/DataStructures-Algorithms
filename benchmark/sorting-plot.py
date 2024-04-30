@@ -62,7 +62,7 @@ for row, col in itertools.product(range(2), range(3)):
         for dataset in datasets:
             subset = insertion_data[insertion_data['Dataset'] == dataset]
             xValues = subset[xLabel].astype(str)
-            yValues = subset[yLabel]
+            yValues = subset.groupby(['Array Size'])['Time (ms)'].mean()
             plot(xLabel, xValues, yLabel, yValues, algorithm)
     elif row == DATASET_ROW:
         insertion_data = dataFrame[dataFrame['Dataset'] == dataset]
@@ -70,7 +70,7 @@ for row, col in itertools.product(range(2), range(3)):
         for algorithm in algorithms:
             subset = insertion_data[insertion_data['Algorithm'] == algorithm]
             xValues = subset['Array Size'].astype(str)
-            yValues = subset['Time (ms)']
+            yValues = subset.groupby(['Array Size'])['Time (ms)'].mean()
             plot(xLabel, xValues, yLabel, yValues, dataset)
 
 plt.show()
