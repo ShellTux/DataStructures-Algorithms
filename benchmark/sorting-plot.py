@@ -64,6 +64,7 @@ for row, col in itertools.product(range(2), range(3)):
             xValues = subset[xLabel].astype(str)
             yValues = subset.groupby(['Array Size'])['Time (ms)'].mean()
             plot(xLabel, xValues, yLabel, yValues, algorithm)
+        subplot.legend(datasets)
     elif row == DATASET_ROW:
         insertion_data = dataFrame[dataFrame['Dataset'] == dataset]
 
@@ -72,5 +73,6 @@ for row, col in itertools.product(range(2), range(3)):
             xValues = subset['Array Size'].astype(str)
             yValues = subset.groupby(['Array Size'])['Time (ms)'].mean()
             plot(xLabel, xValues, yLabel, yValues, dataset)
+        subplot.legend(algorithms)
 
 plt.show()
