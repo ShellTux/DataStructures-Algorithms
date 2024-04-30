@@ -76,3 +76,4 @@ for row, col in itertools.product(range(2), range(3)):
         subplot.legend(algorithms)
 
 plt.show()
+plt.savefig(f'{base_dir}/sorting-benchmark.png')
