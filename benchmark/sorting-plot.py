@@ -35,7 +35,6 @@ algorithms: NDArray[np.object_] = np.unique(dataFrame['Algorithm'])
 datasets: NDArray[np.object_] = np.unique(dataFrame['Dataset'].to_numpy(dtype = str))
 
 max_time_ms = math.ceil(math.ceil(max(dataFrame['Time (ms)']) / 10) * 10 * 1.01)
-print(max_time_ms)
 
 fig, axs = plt.subplots(2, 3, figsize=(18, 10))
 
@@ -43,7 +42,6 @@ ALGORITHM_ROW = 0
 DATASET_ROW   = 1
 
 for row, col in itertools.product(range(2), range(3)):
-    print(row, col, end=' ')
     algorithm = algorithms[col]
     dataset = datasets[col]
 
@@ -66,8 +64,6 @@ for row, col in itertools.product(range(2), range(3)):
             xValues = subset[xLabel].astype(str)
             yValues = subset[yLabel]
             plot(xLabel, xValues, yLabel, yValues, algorithm)
-
-        print(algorithms[col])
     elif row == DATASET_ROW:
         insertion_data = dataFrame[dataFrame['Dataset'] == dataset]
 
@@ -76,9 +72,5 @@ for row, col in itertools.product(range(2), range(3)):
             xValues = subset['Array Size'].astype(str)
             yValues = subset['Time (ms)']
             plot(xLabel, xValues, yLabel, yValues, dataset)
-
-        print(datasets[col])
-    else:
-        continue
 
 plt.show()
