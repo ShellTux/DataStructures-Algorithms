@@ -4,6 +4,7 @@ binTree
 *.odt
 *.pdf
 sorting
+sorting-c
 *.zip
 
 # Created by https://www.toptal.com/developers/gitignore/api/c++

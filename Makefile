@@ -9,7 +9,7 @@ OBJ_DIR         = obj
 PANDOC_DATA_DIR = pandoc
 SRC_DIR         = src
 TARGETS_DIR     = build
-TARGETS         = binTree sorting
+TARGETS         = binTree sorting sorting-c
 
 SOURCES := $(shell find $(SRC_DIR) \
 	   -type f \
@@ -397,6 +397,10 @@ binTree: $(_SOURCES:%=$(OBJ_DIR)/$(SRC_DIR)/%.cpp.o)
 _SOURCES = Sort/main
 sorting: $(_SOURCES:%=$(OBJ_DIR)/$(SRC_DIR)/%.cpp.o)
 	$(CCP) $(CFLAGS) -o $@ $^
+
+_SOURCES = Sort/main Array/Array Array/Sort/Insertion Array/Sort/Heap Array/Sort/Quick
+sorting-c: $(_SOURCES:%=$(OBJ_DIR)/$(SRC_DIR)/%.c.o)
+	$(CC) $(CFLAGS) -o $@ $^
 
 # }}}
 
