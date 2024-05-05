@@ -398,7 +398,7 @@ _SOURCES = Sort/main
 sorting: $(_SOURCES:%=$(OBJ_DIR)/$(SRC_DIR)/%.cpp.o)
 	$(CCP) $(CFLAGS) -o $@ $^
 
-_SOURCES = Sort/main Array/Array Array/Sort/Insertion Array/Sort/Heap Array/Sort/Quick
+_SOURCES = Sort/main Array/Array Array/Sort/Insertion Array/Sort/Heap Array/Sort/Quick Array/Sort/Measure
 sorting-c: $(_SOURCES:%=$(OBJ_DIR)/$(SRC_DIR)/%.c.o)
 	$(CC) $(CFLAGS) -o $@ $^
 

@@ -26,10 +26,16 @@
 #include "Array/Array.h"
 
 typedef void (*AlgorithmFunction)(Array *array);
+typedef void (*DatasetFunction)(Array *array);
+
 typedef struct {
     AlgorithmFunction function;
     char *string;
-    size_t maxSize;
+    struct Dataset {
+        char letter;
+        DatasetFunction function;
+        size_t maxSize;
+    } datasets[3];
 } Algorithm;
 
 double measureArray(Array array, AlgorithmFunction algorithm,

@@ -3,8 +3,6 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include <unistd.h>
 
 #include "Array/Array.h"
@@ -21,24 +19,6 @@ static const size_t SIZES[] = {
 #define MAX 1000 * 1000
 #define MIN 1
 
-static const Algorithm ALGORITHMS[] = {
-    (Algorithm){
-        .function = insertionSortArray,
-        .string   = "Insertion",
-        .maxSize  = 1e5,
-    },
-    (Algorithm){
-        .function = heapSortArray,
-        .string   = "Heap Sort",
-        .maxSize  = ULONG_MAX,
-    },
-    (Algorithm){
-        .function = quickSortArray,
-        .string   = "Quick Sort",
-        .maxSize  = ULONG_MAX,
-    },
-};
-
 int asc(const void *a, const void *b) { return (*(int *)a - *(int *)b); }
 
 int des(const void *a, const void *b) { return (*(int *)b - *(int *)a); }
@@ -53,12 +33,31 @@ void datasetB(Array *array) {
 
 void datasetC(Array *array) { (void)array; }
 
-typedef void (*datasetFunction)(Array *array);
-
-static datasetFunction DATASETS[] = {
-    datasetA,
-    datasetB,
-    datasetC,
+static const Algorithm ALGORITHMS[] = {
+    (Algorithm){.function = insertionSortArray,
+                .string   = "Insertion",
+                .datasets =
+                    {
+                        {'A', datasetA, ULONG_MAX},
+                        {'B', datasetB, 1e5},
+                        {'C', datasetC, 1e6},
+                    }},
+    (Algorithm){.function = heapSortArray,
+                .string   = "Heap Sort",
+                .datasets =
+                    {
+                        {'A', datasetA, ULONG_MAX},
+                        {'B', datasetB, ULONG_MAX},
+                        {'C', datasetC, ULONG_MAX},
+                    }},
+    (Algorithm){.function = quickSortArray,
+                .string   = "Quick Sort",
+                .datasets =
+                    {
+                        {'A', datasetA, ULONG_MAX},
+                        {'B', datasetB, ULONG_MAX},
+                        {'C', datasetC, ULONG_MAX},
+                    }},
 };
 
 #define for2(LOOP1_START, LOOP1_CONDITION, LOOP1_STEP, LOOP2_START, \
@@ -79,35 +78,28 @@ int main(void) {
         const size_t size = SIZES[i];
 
         const Array randomArr = randomArray(size, 0, 1e4);
-        for (size_t j = 0; j < sizeof(DATASETS) / sizeof(*DATASETS); ++j) {
-            const datasetFunction dataset = DATASETS[j];
 
-            Array array;
+        for (size_t j = 0; j < sizeof(ALGORITHMS) / sizeof(*ALGORITHMS); ++j) {
+            const Algorithm algorithm = ALGORITHMS[j];
 
-            for (size_t k = 0; k < sizeof(ALGORITHMS) / sizeof(*ALGORITHMS);
+            for (size_t k = 0;
+                 k < sizeof(algorithm.datasets) / sizeof(*algorithm.datasets);
                  ++k) {
-                const AlgorithmFunction algorithm = ALGORITHMS[k].function;
-                const char *const algorithmString = ALGORITHMS[k].string;
+                const struct Dataset dataset = algorithm.datasets[k];
 
-                if (size > ALGORITHMS[k].maxSize) {
+                if (size > dataset.maxSize) {
                     continue;
                 }
 
-                array = copyArray(randomArr);
-                dataset(&array);
+                Array array = copyArray(randomArr);
+                dataset.function(&array);
 
                 const size_t iterations = 1;
                 const double cpuTimeUsed =
-                    measureArray(array, algorithm, iterations);
-                fprintf(
-                    stderr,
-                    "Time taken to sort an array of %zu keys %zu times by %s: "
-                    "%02.02f "
-                    "miliseconds\n",
-                    size, iterations, algorithmString, cpuTimeUsed);
-                const char datasetString = j == 0 ? 'A' : j == 1 ? 'B' : 'C';
-                printf("%s;%c;%zu;%f;\n", ALGORITHMS[k].string, datasetString,
-                       size, cpuTimeUsed);
+                    measureArray(array, algorithm.function, iterations);
+
+                fprintf(stdout, "%s;%c;%zu;%f;\n", algorithm.string,
+                        dataset.letter, size, cpuTimeUsed);
                 fflush(stdout);
 
                 destroyArray(&array);
