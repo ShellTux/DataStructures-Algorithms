@@ -13,7 +13,7 @@
 
 static const size_t SIZES[] = {
     1e4, 3e4, 5e4, 7e4, 1e5, 3e5, 5e5, 7e5, 1e6,
-    3e6, 5e6, 7e6, 1e7, 3e7, 5e7, 7e7, 1e8,
+    3e6, 5e6, 7e6, 1e7, 3e7, 5e7, 7e7
 };
 
 #define MAX 1000 * 1000
@@ -38,9 +38,9 @@ static const Algorithm ALGORITHMS[] = {
                 .string   = "Insertion",
                 .datasets =
                     {
-                        {'A', datasetA, ULONG_MAX},
+                        {'A', datasetA, 1e5},
                         {'B', datasetB, 1e5},
-                        {'C', datasetC, 1e6},
+                        {'C', datasetC, 1e5},
                     }},
     (Algorithm){.function = heapSortArray,
                 .string   = "Heap Sort",
