@@ -20,12 +20,33 @@
  *
  ***************************************************************************/
 
-#include <stdlib.h>
-
 #include "Array/Array.h"
 
 int compare(const void *a, const void *b) { return (*(int *)a - *(int *)b); }
 
+int partition(ARRAY_DATA_TYPE array[], int low, int high) {
+    int pivot = array[high];
+    int i     = low - 1;
+
+    for (int j = low; j <= high - 1; j++) {
+        if (array[j] < pivot) {
+            i++;
+            swap(&array[i], &array[j]);
+        }
+    }
+    swap(&array[i + 1], &array[high]);
+    return i + 1;
+}
+
+void quickSort(ARRAY_DATA_TYPE arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
 void quickSortArray(Array *array) {
-    qsort(array->data, array->size, sizeof(*array->data), compare);
+    quickSort(array->data, 0, array->size - 1);
 }

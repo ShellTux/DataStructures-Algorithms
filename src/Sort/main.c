@@ -60,18 +60,6 @@ static const Algorithm ALGORITHMS[] = {
                     }},
 };
 
-#define for2(LOOP1_START, LOOP1_CONDITION, LOOP1_STEP, LOOP2_START, \
-             LOOP2_CONDITION, LOOP2_STEP)                           \
-    for (LOOP1_START; LOOP1_CONDITION; LOOP1_STEP)                  \
-        for (LOOP2_START; LOOP2_CONDITION; LOOP2_STEP)
-
-#define for3(LOOP1_START, LOOP1_CONDITION, LOOP1_STEP, LOOP2_START,     \
-             LOOP2_CONDITION, LOOP2_STEP, LOOP3_START, LOOP3_CONDITION, \
-             LOOP3_STEP)                                                \
-    for (LOOP1_START; LOOP1_CONDITION; LOOP1_STEP)                      \
-        for (LOOP2_START; LOOP2_CONDITION; LOOP2_STEP)                  \
-            for (LOOP3_START; LOOP3_CONDITION; LOOP3_STEP)
-
 int main(void) {
     printf("Algorithm;Dataset;Array Size;Time (ms);\n");
     for (size_t i = 0; i < sizeof(SIZES) / sizeof(*SIZES); ++i) {
